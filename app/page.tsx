@@ -11,6 +11,7 @@ import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
 import CarPriceStats from "./carPriceStats";
 import Listings from "./list";
+import { allBrands } from "@/config/all_json";
 
 export default function CarPrice() {
   const dates = Array.from(
@@ -163,13 +164,9 @@ export default function CarPrice() {
             value={make}
             isRequired
             onChange={(e) => setMake(e.target.value)}>
-            {brand?.map((b, i) => (
-              <SelectItem
-                isDisabled={b?.name !== "Toyota"}
-                textValue={b?.name}
-                value={b?.name}
-                key={b?.name}>
-                {b.name}
+            {allBrands?.map((b, i) => (
+              <SelectItem textValue={b?.brand} value={b?.brand} key={b?.brand}>
+                {b?.brand}
               </SelectItem>
             ))}
           </Select>
@@ -177,13 +174,16 @@ export default function CarPrice() {
             label="Загвар"
             name="model"
             isRequired
+            disabled={make === ""}
             value={model}
             onChange={(e) => setModel(e.target.value)}>
-            {models?.map((m, i) => (
-              <SelectItem key={m?.name} textValue={m?.name} value={m?.name}>
-                {m.name}
-              </SelectItem>
-            ))}
+            {allBrands
+              .find((e) => e.brand === make)
+              ?.models?.map((m) => (
+                <SelectItem key={m} textValue={m} value={m}>
+                  {m}
+                </SelectItem>
+              )) || []}
           </Select>
           <Input
             errorMessage="Please enter a valid millage"
