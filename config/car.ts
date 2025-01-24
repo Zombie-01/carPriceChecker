@@ -4,17 +4,23 @@ import * as cheerio from "cheerio";
 const fetchCarPrices = async (
   make: string,
   model: string,
-  mileageMin: string,
-  mileageMax: string,
   yearMin: string,
   yearMax: string,
   oYearMin: string,
   oYearMinMax: string,
   wheel: string,
-  status: string
+  status: string,
+  mileageMin?: string,
+  mileageMax?: string
 ): Promise<any | null> => {
+  console.log("mileageMax", mileageMax);
   const baseUrl = "https://www.unegui.mn/avto-mashin/-avtomashin-zarna/";
-  const queryParams = `${make}/${model}/condition---${status}/milliage_max---${mileageMax}/milliage_min---${mileageMin}/oyear_max---${oYearMinMax}/oyear_min---${oYearMin}/ruli---${wheel}/year_max---${yearMax}/year_min---${yearMin}/`;
+  const queryParams = `${make}/${model}/condition---${status}/${
+    mileageMax && mileageMax !== "" && mileageMax !== "0"
+      ? `milliage_max---${mileageMax}/milliage_min---${mileageMin}/`
+      : ``
+  }oyear_max---${oYearMinMax}/oyear_min---${oYearMin}/ruli---${wheel}/year_max---${yearMax}/year_min---${yearMin}/`;
+
   const fullUrl = baseUrl + queryParams;
 
   const prices: number[] = [];

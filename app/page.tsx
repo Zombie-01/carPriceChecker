@@ -20,7 +20,7 @@ export default function CarPrice() {
   const [load, setLoad] = useState(false);
   const [make, setMake] = useState("Toyota");
   const [model, setModel] = useState("wrangler");
-  const [millage, setMillage] = useState("10000");
+  const [millage, setMillage] = useState("");
   const [buildDate, setBuildDate] = useState("2025");
   const [importDate, setImportDate] = useState("2025");
   const [wheel, setWheels] = useState("4");
@@ -44,15 +44,17 @@ export default function CarPrice() {
             setLoad(true);
             let data = Object.fromEntries(new FormData(e.currentTarget));
             // Find the selected mileage
-
+            let mileageMin;
+            let mileageMax;
             // Sort and parse millages
-            const sortedMillages =
-              millages?.map((m) => parseInt(m.dataId)).sort((a, b) => a - b) ||
-              [];
+            if (millage && millage !== "" && millage !== "0") {
+              const sortedMillages =
+                millages
+                  ?.map((m) => parseInt(m.dataId))
+                  .sort((a, b) => a - b) || [];
 
-            // Find the closest minimum mileage (lower or equal)
-            const mileageMin =
-              sortedMillages.reduce(
+              // Find the closest minimum mileage (lower or equal)
+              mileageMin = sortedMillages.reduce(
                 (prev, curr) =>
                   Math.abs(curr - parseInt(millage || "0")) <
                     Math.abs(prev - parseInt(millage || "0")) &&
@@ -60,11 +62,10 @@ export default function CarPrice() {
                     ? curr
                     : prev,
                 sortedMillages[0]
-              ) || null;
+              );
 
-            // Find the closest maximum mileage (greater or equal)
-            const mileageMax =
-              sortedMillages.reduce(
+              // Find the closest maximum mileage (greater or equal)
+              mileageMax = sortedMillages.reduce(
                 (prev, curr) =>
                   Math.abs(curr - parseInt(millage || "0")) <
                     Math.abs(prev - parseInt(millage || "0")) &&
@@ -72,7 +73,8 @@ export default function CarPrice() {
                     ? curr
                     : prev,
                 sortedMillages[sortedMillages.length - 1]
-              ) || null;
+              );
+            }
 
             // Find the selected build date
 
@@ -141,14 +143,14 @@ export default function CarPrice() {
             let result = fetchCarPrices(
               data?.makeBy.toString().toLowerCase(),
               data?.model.toString().toLowerCase(),
-              mileageMin?.toString() || "",
-              mileageMax?.toString() || "",
               buildDateMin?.toString() || "",
               buildDateMax?.toString() || "",
               importDateMin?.toString() || "",
               importDateMax?.toString() || "",
               wheel,
-              data?.status.toString()
+              data?.status.toString(),
+              mileageMin?.toString() || "",
+              mileageMax?.toString() || ""
             )
               .then((res) => {
                 setAveragePrice(res as any);
@@ -184,7 +186,6 @@ export default function CarPrice() {
             ))}
           </Select>
           <Input
-            isRequired
             errorMessage="Please enter a valid millage"
             label="Явсан км"
             name="millage"
