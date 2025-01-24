@@ -60,7 +60,10 @@ const fetchCarPrices = async (
           dealerLink: $(element).find("a.advert__header-logo").attr("href"),
           dealerLogo: $(element).find("img.advert__header-logo").attr("src"),
           dealerName: $(element).find("span.advert__header-name").text().trim(),
-          price: $(element).find("span.advert__content-price").text().trim(),
+          price: $(element)
+            .find(".advert__content-price._not-title")
+            .text()
+            .trim(),
           title: $(element).find("a.advert__content-title").text().trim(),
           features: $(element)
             .find("div.advert__content-feature")
