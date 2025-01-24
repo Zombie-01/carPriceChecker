@@ -18,6 +18,7 @@ const fetchCarPrices = async (
   const fullUrl = baseUrl + queryParams;
 
   const prices: number[] = [];
+  let content: any[] = [];
   let currentPage = 1;
   let hasNextPage = true;
 
@@ -50,6 +51,47 @@ const fetchCarPrices = async (
 
       // Check for next page
       const nextPageLink = $(".number-list .js-page-filter").last();
+
+      $(".advert.js-item-listing").each((index, element) => {
+        // Extract the data for each listing
+        let data = {
+          images: [],
+          link: $(element).find("a.advert__content-title").attr("href"),
+          dealerLink: $(element).find("a.advert__header-logo").attr("href"),
+          dealerLogo: $(element).find("img.advert__header-logo").attr("src"),
+          dealerName: $(element).find("span.advert__header-name").text().trim(),
+          price: $(element).find("span.advert__content-price").text().trim(),
+          title: $(element).find("a.advert__content-title").text().trim(),
+          features: $(element)
+            .find("div.advert__content-feature")
+            .map((i, el) => $(el).text().trim())
+            .get(),
+          date: $(element).find("div.advert__content-date").text().trim(),
+          location: $(element).find("div.advert__content-place").text().trim()
+        };
+
+        // Extract images for each listing
+        $(element)
+          .find("a.swiper-slide")
+          .each((i, imgElement) => {
+            // Extract the style attribute
+            const style = $(imgElement).attr("data-background");
+            console.log(style);
+
+            if (style) {
+              // Extract the background-image URL from the style attribute
+              const imageUrlMatch = style.match(/url\(["']?(.*?)["']?\)/);
+
+              // If a match is found, push the image URL to the data array
+              console.log(style);
+              data.images.push(style);
+            }
+          });
+
+        // Push the data for this item to the content array
+        content.push(data);
+      });
+
       if (
         nextPageLink.attr("data-page") &&
         nextPageLink.attr("data-page") !== currentPage.toString()
@@ -78,7 +120,8 @@ const fetchCarPrices = async (
         minPrice,
         maxPrice,
         averagePrice,
-        carCount
+        carCount,
+        content
       };
     } else {
       console.log("Үнийн мэдээлэл олдсонгүй.");

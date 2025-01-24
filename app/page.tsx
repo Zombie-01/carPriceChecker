@@ -10,6 +10,7 @@ import { Radio, RadioGroup } from "@heroui/radio";
 import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
 import CarPriceStats from "./carPriceStats";
+import Listings from "./list";
 
 export default function CarPrice() {
   const dates = Array.from(
@@ -250,12 +251,15 @@ export default function CarPrice() {
           </Button>
         </Form>
         {averagePrice && (
-          <CarPriceStats
-            minPrice={+averagePrice?.minPrice}
-            maxPrice={+averagePrice?.maxPrice}
-            averagePrice={+averagePrice?.averagePrice}
-            carCount={+averagePrice?.carCount}
-          />
+          <div className="flex flex-col">
+            <CarPriceStats
+              minPrice={+averagePrice?.minPrice}
+              maxPrice={+averagePrice?.maxPrice}
+              averagePrice={+averagePrice?.averagePrice}
+              carCount={+averagePrice?.carCount}
+            />
+            <Listings content={averagePrice?.content || []} />
+          </div>
         )}
       </div>
     </div>
