@@ -74,21 +74,21 @@ const fetchCarPrices = async (
         };
 
         // Extract images for each listing
+        let imgs: Array<string> = [];
         $(element)
           .find("a.swiper-slide")
           .each((i, imgElement) => {
             // Extract the style attribute
-            const style = $(imgElement).attr("data-background");
+            const style = $(imgElement).attr("data-background") as string;
             console.log(style);
 
             if (style) {
               // Extract the background-image URL from the style attribute
-              const imageUrlMatch = style.match(/url\(["']?(.*?)["']?\)/);
-
               // If a match is found, push the image URL to the data array
               console.log(style);
-              data.images.push(style);
+              imgs.push(style);
             }
+            data.images = imgs as any;
           });
 
         // Push the data for this item to the content array
